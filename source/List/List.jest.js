@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {findDOMNode} from 'react-dom';
-import {render} from '../TestUtils';
-import {Simulate} from 'react-dom/test-utils';
+import { findDOMNode } from 'react-dom';
+import { render } from '../TestUtils';
+import { Simulate } from 'react-dom/test-utils';
 import Immutable from 'immutable';
 import List from './List';
-import {defaultOverscanIndicesGetter} from '../Grid';
+import { defaultOverscanIndicesGetter } from '../Grid';
 
 describe('List', () => {
   const array = [];
@@ -15,7 +15,7 @@ describe('List', () => {
 
   // Override default behavior of overscanning by at least 1 (for accessibility)
   // Because it makes for simple tests below
-  function overscanIndicesGetter({startIndex, stopIndex}) {
+  function overscanIndicesGetter({ startIndex, stopIndex }) {
     return {
       overscanStartIndex: startIndex,
       overscanStopIndex: stopIndex,
@@ -23,7 +23,7 @@ describe('List', () => {
   }
 
   function getMarkup(props = {}) {
-    function rowRenderer({index, key, style}) {
+    function rowRenderer({ index, key, style }) {
       return (
         <div className="listItem" key={key} style={style}>
           {names.get(index)}
@@ -52,7 +52,7 @@ describe('List', () => {
     });
 
     it('should not render more children than available if the list is not filled', () => {
-      const rendered = findDOMNode(render(getMarkup({rowCount: 5})));
+      const rendered = findDOMNode(render(getMarkup({ rowCount: 5 })));
       expect(rendered.querySelectorAll('.listItem').length).toEqual(5);
     });
   });
@@ -74,12 +74,12 @@ describe('List', () => {
   /** Tests scrolling via initial props */
   describe('scrollToIndex', () => {
     it('should scroll to the top', () => {
-      const rendered = findDOMNode(render(getMarkup({scrollToIndex: 0})));
+      const rendered = findDOMNode(render(getMarkup({ scrollToIndex: 0 })));
       expect(rendered.textContent).toContain('Name 0');
     });
 
     it('should scroll down to the middle', () => {
-      const rendered = findDOMNode(render(getMarkup({scrollToIndex: 49})));
+      const rendered = findDOMNode(render(getMarkup({ scrollToIndex: 49 })));
       // 100 items * 10 item height = 1,000 total item height
       // 10 items can be visible at a time and :scrollTop is initially 0,
       // So the minimum amount of scrolling leaves the 50th item at the bottom (just scrolled into view).
@@ -87,7 +87,7 @@ describe('List', () => {
     });
 
     it('should scroll to the bottom', () => {
-      const rendered = findDOMNode(render(getMarkup({scrollToIndex: 99})));
+      const rendered = findDOMNode(render(getMarkup({ scrollToIndex: 99 })));
       // 100 height - 10 header = 90 available scroll space.
       // 100 items * 10 item height = 1,000 total item height
       // Target height for the last item then is 1000 - 90
@@ -149,21 +149,21 @@ describe('List', () => {
 
   describe('property updates', () => {
     it('should update :scrollToIndex position when :rowHeight changes', () => {
-      let rendered = findDOMNode(render(getMarkup({scrollToIndex: 50})));
+      let rendered = findDOMNode(render(getMarkup({ scrollToIndex: 50 })));
       expect(rendered.textContent).toContain('Name 50');
       // Making rows taller pushes name off/beyond the scrolled area
       rendered = findDOMNode(
-        render(getMarkup({scrollToIndex: 50, rowHeight: 20})),
+        render(getMarkup({ scrollToIndex: 50, rowHeight: 20 })),
       );
       expect(rendered.textContent).toContain('Name 50');
     });
 
     it('should update :scrollToIndex position when :height changes', () => {
-      let rendered = findDOMNode(render(getMarkup({scrollToIndex: 50})));
+      let rendered = findDOMNode(render(getMarkup({ scrollToIndex: 50 })));
       expect(rendered.textContent).toContain('Name 50');
       // Making the list shorter leaves only room for 1 item
       rendered = findDOMNode(
-        render(getMarkup({scrollToIndex: 50, height: 20})),
+        render(getMarkup({ scrollToIndex: 50, height: 20 })),
       );
       expect(rendered.textContent).toContain('Name 50');
     });
@@ -171,15 +171,15 @@ describe('List', () => {
     it('should update :scrollToIndex position when :scrollToIndex changes', () => {
       let rendered = findDOMNode(render(getMarkup()));
       expect(rendered.textContent).not.toContain('Name 50');
-      rendered = findDOMNode(render(getMarkup({scrollToIndex: 50})));
+      rendered = findDOMNode(render(getMarkup({ scrollToIndex: 50 })));
       expect(rendered.textContent).toContain('Name 50');
     });
 
     it('should update scroll position if size shrinks smaller than the current scroll', () => {
-      findDOMNode(render(getMarkup({scrollToIndex: 500})));
+      findDOMNode(render(getMarkup({ scrollToIndex: 500 })));
       findDOMNode(render(getMarkup()));
       const rendered = findDOMNode(
-        render(getMarkup({scrollToIndex: 500, rowCount: 10})),
+        render(getMarkup({ scrollToIndex: 500, rowCount: 10 })),
       );
       expect(rendered.textContent).toContain('Name 9');
     });
@@ -215,7 +215,7 @@ describe('List', () => {
       let startIndex, stopIndex;
       render(
         getMarkup({
-          onRowsRendered: params => ({startIndex, stopIndex} = params),
+          onRowsRendered: params => ({ startIndex, stopIndex } = params),
         }),
       );
       expect(startIndex).toEqual(0);
@@ -231,11 +231,11 @@ describe('List', () => {
         stopIndex = params.stopIndex;
         numCalls++;
       };
-      findDOMNode(render(getMarkup({onRowsRendered})));
+      findDOMNode(render(getMarkup({ onRowsRendered })));
       expect(numCalls).toEqual(1);
       expect(startIndex).toEqual(0);
       expect(stopIndex).toEqual(9);
-      findDOMNode(render(getMarkup({onRowsRendered})));
+      findDOMNode(render(getMarkup({ onRowsRendered })));
       expect(numCalls).toEqual(1);
       expect(startIndex).toEqual(0);
       expect(stopIndex).toEqual(9);
@@ -250,7 +250,7 @@ describe('List', () => {
         stopIndex = params.stopIndex;
         numCalls++;
       };
-      findDOMNode(render(getMarkup({onRowsRendered})));
+      findDOMNode(render(getMarkup({ onRowsRendered })));
       expect(numCalls).toEqual(1);
       expect(startIndex).toEqual(0);
       expect(stopIndex).toEqual(9);
@@ -272,7 +272,7 @@ describe('List', () => {
       render(
         getMarkup({
           height: 0,
-          onRowsRendered: params => ({startIndex, stopIndex} = params),
+          onRowsRendered: params => ({ startIndex, stopIndex } = params),
         }),
       );
       expect(startIndex).toEqual(undefined);
@@ -285,7 +285,7 @@ describe('List', () => {
       let startIndex, stopIndex;
       render(
         getMarkup({
-          onRowsRendered: params => ({startIndex, stopIndex} = params),
+          onRowsRendered: params => ({ startIndex, stopIndex } = params),
           scrollTop: 100,
         }),
       );
@@ -299,7 +299,7 @@ describe('List', () => {
       findDOMNode(
         render(
           getMarkup({
-            onRowsRendered: params => ({startIndex, stopIndex} = params),
+            onRowsRendered: params => ({ startIndex, stopIndex } = params),
           }),
         ),
       );
@@ -309,7 +309,7 @@ describe('List', () => {
       findDOMNode(
         render(
           getMarkup({
-            onRowsRendered: params => ({startIndex, stopIndex} = params),
+            onRowsRendered: params => ({ startIndex, stopIndex } = params),
             scrollTop: 100,
           }),
         ),
@@ -326,18 +326,18 @@ describe('List', () => {
     });
 
     it('should use a custom :className if specified', () => {
-      const node = findDOMNode(render(getMarkup({className: 'foo'})));
+      const node = findDOMNode(render(getMarkup({ className: 'foo' })));
       expect(node.className).toContain('foo');
     });
 
     it('should use a custom :id if specified', () => {
-      const node = findDOMNode(render(getMarkup({id: 'bar'})));
+      const node = findDOMNode(render(getMarkup({ id: 'bar' })));
       expect(node.getAttribute('id')).toEqual('bar');
     });
 
     it('should use a custom :style if specified', () => {
-      const style = {backgroundColor: 'red'};
-      const rendered = findDOMNode(render(getMarkup({style})));
+      const style = { backgroundColor: 'red' };
+      const rendered = findDOMNode(render(getMarkup({ style })));
       expect(rendered.style.backgroundColor).toEqual('red');
     });
 
@@ -345,6 +345,15 @@ describe('List', () => {
       const rendered = findDOMNode(render(getMarkup()));
       const cell = rendered.querySelector('.listItem');
       expect(cell.style.width).toEqual('100%');
+    });
+
+    it('should use a custom :containerStyle if specified', () => {
+      const containerStyle = { backgroundColor: 'red' };
+      const rendered = findDOMNode(render(getMarkup({ containerStyle })));
+      expect(
+        rendered.querySelector('.ReactVirtualized__Grid__innerScrollContainer')
+          .style.backgroundColor,
+      ).toEqual('red');
     });
   });
 
@@ -406,7 +415,7 @@ describe('List', () => {
         scrollTop: 100,
       };
       rendered.Grid._scrollingContainer = target; // HACK to work around _onScroll target check
-      Simulate.scroll(findDOMNode(rendered), {target});
+      Simulate.scroll(findDOMNode(rendered), { target });
       expect(onScrollCalls[onScrollCalls.length - 1]).toEqual({
         clientHeight: 100,
         scrollHeight: 1000,
@@ -439,7 +448,7 @@ describe('List', () => {
   describe('recomputeRowHeights', () => {
     it('should recompute row heights and other values when called', () => {
       const indices = [];
-      const rowHeight = ({index}) => {
+      const rowHeight = ({ index }) => {
         indices.push(index);
         return 10;
       };
@@ -468,7 +477,7 @@ describe('List', () => {
   describe('forceUpdateGrid', () => {
     it('should refresh inner Grid content when called', () => {
       let marker = 'a';
-      function rowRenderer({index, key, style}) {
+      function rowRenderer({ index, key, style }) {
         return (
           <div key={key} style={style}>
             {index}
@@ -476,7 +485,7 @@ describe('List', () => {
           </div>
         );
       }
-      const component = render(getMarkup({rowRenderer}));
+      const component = render(getMarkup({ rowRenderer }));
       const node = findDOMNode(component);
       expect(node.textContent).toContain('1a');
       marker = 'b';
@@ -526,14 +535,14 @@ describe('List', () => {
 
   it('should relay the Grid :parent param to the :rowRenderer', () => {
     const rowRenderer = jest.fn().mockReturnValue(null);
-    findDOMNode(render(getMarkup({rowRenderer})));
+    findDOMNode(render(getMarkup({ rowRenderer })));
     expect(rowRenderer.mock.calls[0][0].parent).not.toBeUndefined();
   });
 
   describe('pure', () => {
     it('should not re-render unless props have changed', () => {
       let rowRendererCalled = false;
-      function rowRenderer({index, key, style}) {
+      function rowRenderer({ index, key, style }) {
         rowRendererCalled = true;
         return (
           <div key={key} style={style}>
@@ -541,7 +550,7 @@ describe('List', () => {
           </div>
         );
       }
-      const markup = getMarkup({rowRenderer});
+      const markup = getMarkup({ rowRenderer });
       render(markup);
       expect(rowRendererCalled).toEqual(true);
       rowRendererCalled = false;

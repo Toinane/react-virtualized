@@ -1,13 +1,12 @@
 /** @flow */
 
-import type {CellPosition} from '../Grid';
+import type { CellPosition } from '../Grid';
 
 import clsx from 'clsx';
 import Column from './Column';
 import PropTypes from 'prop-types';
 import * as React from 'react';
-import {findDOMNode} from 'react-dom';
-import Grid, {accessibilityOverscanIndicesGetter} from '../Grid';
+import Grid, { accessibilityOverscanIndicesGetter } from '../Grid';
 
 import defaultRowRenderer from './defaultRowRenderer';
 import defaultHeaderRowRenderer from './defaultHeaderRowRenderer';
@@ -272,9 +271,9 @@ export default class Table extends React.PureComponent {
   }
 
   /** See Grid#getOffsetForCell */
-  getOffsetForRow({alignment, index}) {
+  getOffsetForRow({ alignment, index }) {
     if (this.Grid) {
-      const {scrollTop} = this.Grid.getOffsetForCell({
+      const { scrollTop } = this.Grid.getOffsetForCell({
         alignment,
         rowIndex: index,
       });
@@ -285,7 +284,7 @@ export default class Table extends React.PureComponent {
   }
 
   /** CellMeasurer compatibility */
-  invalidateCellSizeAfterRender({columnIndex, rowIndex}: CellPosition) {
+  invalidateCellSizeAfterRender({ columnIndex, rowIndex }: CellPosition) {
     if (this.Grid) {
       this.Grid.invalidateCellSizeAfterRender({
         rowIndex,
@@ -302,7 +301,7 @@ export default class Table extends React.PureComponent {
   }
 
   /** CellMeasurer compatibility */
-  recomputeGridSize({columnIndex = 0, rowIndex = 0}: CellPosition = {}) {
+  recomputeGridSize({ columnIndex = 0, rowIndex = 0 }: CellPosition = {}) {
     if (this.Grid) {
       this.Grid.recomputeGridSize({
         rowIndex,
@@ -323,7 +322,7 @@ export default class Table extends React.PureComponent {
   /** See Grid#scrollToPosition */
   scrollToPosition(scrollTop = 0) {
     if (this.Grid) {
-      this.Grid.scrollToPosition({scrollTop});
+      this.Grid.scrollToPosition({ scrollTop });
     }
   }
 
@@ -339,7 +338,7 @@ export default class Table extends React.PureComponent {
 
   getScrollbarWidth() {
     if (this.Grid) {
-      const Grid = findDOMNode(this.Grid);
+      const Grid = this.Grid._scrollingContainer;
       const clientWidth = Grid.clientWidth || 0;
       const offsetWidth = Grid.offsetWidth || 0;
       return offsetWidth - clientWidth;
@@ -374,16 +373,16 @@ export default class Table extends React.PureComponent {
       style,
       width,
     } = this.props;
-    const {scrollbarWidth} = this.state;
+    const { scrollbarWidth } = this.state;
 
     const availableRowsHeight = disableHeader ? height : height - headerHeight;
 
     const rowClass =
       typeof rowClassName === 'function'
-        ? rowClassName({index: -1})
+        ? rowClassName({ index: -1 })
         : rowClassName;
     const rowStyleObject =
-      typeof rowStyle === 'function' ? rowStyle({index: -1}) : rowStyle;
+      typeof rowStyle === 'function' ? rowStyle({ index: -1 }) : rowStyle;
 
     // Precompute and cache column styles before rendering rows and columns to speed things up
     this._cachedColumnStyles = [];
@@ -451,8 +450,8 @@ export default class Table extends React.PureComponent {
     );
   }
 
-  _createColumn({column, columnIndex, isScrolling, parent, rowData, rowIndex}) {
-    const {onColumnClick} = this.props;
+  _createColumn({ column, columnIndex, isScrolling, parent, rowData, rowIndex }) {
+    const { onColumnClick } = this.props;
     const {
       cellDataGetter,
       cellRenderer,
@@ -462,7 +461,7 @@ export default class Table extends React.PureComponent {
       id,
     } = column.props;
 
-    const cellData = cellDataGetter({columnData, dataKey, rowData});
+    const cellData = cellDataGetter({ columnData, dataKey, rowData });
     const renderedCell = cellRenderer({
       cellData,
       columnData,
@@ -475,7 +474,7 @@ export default class Table extends React.PureComponent {
     });
 
     const onClick = event => {
-      onColumnClick && onColumnClick({columnData, dataKey, event});
+      onColumnClick && onColumnClick({ columnData, dataKey, event });
     };
 
     const style = this._cachedColumnStyles[columnIndex];
@@ -500,7 +499,7 @@ export default class Table extends React.PureComponent {
     );
   }
 
-  _createHeader({column, index}) {
+  _createHeader({ column, index }) {
     const {
       headerClassName,
       headerStyle,
@@ -557,8 +556,8 @@ export default class Table extends React.PureComponent {
       const newSortDirection = isFirstTimeSort
         ? defaultSortDirection
         : sortDirection === SortDirection.DESC
-        ? SortDirection.ASC
-        : SortDirection.DESC;
+          ? SortDirection.ASC
+          : SortDirection.DESC;
 
       const onClick = event => {
         sortEnabled &&
@@ -568,7 +567,7 @@ export default class Table extends React.PureComponent {
             sortBy: dataKey,
             sortDirection: newSortDirection,
           });
-        onHeaderClick && onHeaderClick({columnData, dataKey, event});
+        onHeaderClick && onHeaderClick({ columnData, dataKey, event });
       };
 
       const onKeyDown = event => {
@@ -609,7 +608,7 @@ export default class Table extends React.PureComponent {
     );
   }
 
-  _createRow({rowIndex: index, isScrolling, key, parent, style}) {
+  _createRow({ rowIndex: index, isScrolling, key, parent, style }) {
     const {
       children,
       onRowClick,
@@ -623,13 +622,13 @@ export default class Table extends React.PureComponent {
       rowStyle,
     } = this.props;
 
-    const {scrollbarWidth} = this.state;
+    const { scrollbarWidth } = this.state;
 
     const rowClass =
-      typeof rowClassName === 'function' ? rowClassName({index}) : rowClassName;
+      typeof rowClassName === 'function' ? rowClassName({ index }) : rowClassName;
     const rowStyleObject =
-      typeof rowStyle === 'function' ? rowStyle({index}) : rowStyle;
-    const rowData = rowGetter({index});
+      typeof rowStyle === 'function' ? rowStyle({ index }) : rowStyle;
+    const rowData = rowGetter({ index });
 
     const columns = React.Children.toArray(children).map(
       (column, columnIndex) =>
@@ -694,24 +693,24 @@ export default class Table extends React.PureComponent {
   }
 
   _getHeaderColumns() {
-    const {children, disableHeader} = this.props;
+    const { children, disableHeader } = this.props;
     const items = disableHeader ? [] : React.Children.toArray(children);
 
-    return items.map((column, index) => this._createHeader({column, index}));
+    return items.map((column, index) => this._createHeader({ column, index }));
   }
 
   _getRowHeight(rowIndex) {
-    const {rowHeight} = this.props;
+    const { rowHeight } = this.props;
 
     return typeof rowHeight === 'function'
-      ? rowHeight({index: rowIndex})
+      ? rowHeight({ index: rowIndex })
       : rowHeight;
   }
 
-  _onScroll({clientHeight, scrollHeight, scrollTop}) {
-    const {onScroll} = this.props;
+  _onScroll({ clientHeight, scrollHeight, scrollTop }) {
+    const { onScroll } = this.props;
 
-    onScroll({clientHeight, scrollHeight, scrollTop});
+    onScroll({ clientHeight, scrollHeight, scrollTop });
   }
 
   _onSectionRendered({
@@ -720,7 +719,7 @@ export default class Table extends React.PureComponent {
     rowStartIndex,
     rowStopIndex,
   }) {
-    const {onRowsRendered} = this.props;
+    const { onRowsRendered } = this.props;
 
     onRowsRendered({
       overscanStartIndex: rowOverscanStartIndex,
@@ -737,6 +736,6 @@ export default class Table extends React.PureComponent {
   _setScrollbarWidth() {
     const scrollbarWidth = this.getScrollbarWidth();
 
-    this.setState({scrollbarWidth});
+    this.setState({ scrollbarWidth });
   }
 }
